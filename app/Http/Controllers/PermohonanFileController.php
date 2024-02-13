@@ -19,6 +19,9 @@ class PermohonanFileController extends Controller
     {
 
 
+
+        $folder_upload = 'uploads';
+
         try {
             if ($request->hasFile('file_no_ktp_pemohon')) {
                 $file = $request->file('file_no_ktp_pemohon');
@@ -26,18 +29,18 @@ class PermohonanFileController extends Controller
                 $datareques = [
                     'file' => $file,
                     'no_ktp' => $request->no_ktp_pemohon,
-                    'ketfile' => 'file_ktp'
+                    'ketfile' => 'KTP_PEMOHON'
                 ];
+
+
                 $filename = $this->newFileName($datareques);
 
-                $file->move(public_path('uploads'), $filename);
+                $file->move(public_path($folder_upload), $filename);
 
 
                 $file = new PermohonanFile([
                     'no_ktp_pemohon' => $request->no_ktp_pemohon,
-                    'file_no_ktp_pemohon' => $filename,
-                    'file_no_ktp_pasangan' => '-',
-                    'file_no_kk' => '-',
+                    'nama_file' => $filename,
                     'jenis_file' => "KTP"
                 ]);
 
@@ -52,19 +55,17 @@ class PermohonanFileController extends Controller
                 $datareques = [
                     'file' => $file,
                     'no_ktp' => $request->no_ktp_pemohon,
-                    'ketfile' => 'file_ktp'
+                    'ketfile' => 'KTP_PASANGAN'
                 ];
                 $filename = $this->newFileName($datareques);
 
 
-                $file->move(public_path('uploads'), $filename);
+                $file->move(public_path($folder_upload), $filename);
 
 
                 $file = new PermohonanFile([
                     'no_ktp_pemohon' => $request->no_ktp_pemohon,
-                    'file_no_ktp_pemohon' => '-',
-                    'file_no_ktp_pasangan' => $filename,
-                    'file_no_kk' => '-',
+                    'nama_file' => $filename,
                     'jenis_file' => "KTP"
                 ]);
                 $file->save();
@@ -76,17 +77,15 @@ class PermohonanFileController extends Controller
                 $datareques = [
                     'file' => $file,
                     'no_ktp' => $request->no_ktp_pemohon,
-                    'ketfile' => 'file_kk'
+                    'ketfile' => 'KK'
                 ];
                 $filename = $this->newFileName($datareques);
-                $file->move(public_path('uploads'), $filename);
+                $file->move(public_path($folder_upload), $filename);
 
 
                 $file = new PermohonanFile([
                     'no_ktp_pemohon' => $request->no_ktp_pemohon,
-                    'file_no_ktp_pemohon' => '-',
-                    'file_no_ktp_pasangan' => '-',
-                    'file_no_kk' => $filename,
+                    'nama_file' => $filename,
                     'jenis_file' => "KK"
                 ]);
                 $file->save();
@@ -113,9 +112,13 @@ class PermohonanFileController extends Controller
         $now = Carbon::now();
         $formattedDate = $now->format('dmY_His');
         $extension = $file->getClientOriginalExtension();
-        $newFileName = $ketfile . '_' . $no_ktp . $formattedDate . '.' . $extension;
+        $newFileName =  $no_ktp . '_' . $ketfile . '_' . $formattedDate . '.' . $extension;
         return $newFileName;
     }
+
+
+
+    
 
 
 

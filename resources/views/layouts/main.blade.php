@@ -28,6 +28,58 @@
 
 
 
+    <style>
+        .lds-facebook {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            z-index: 1000;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            /* Efek shadow tipis */
+            border-radius: 5px;
+        }
+
+        .lds-facebook div {
+            display: inline-block;
+            position: absolute;
+            left: 8px;
+            width: 16px;
+            background: #fff;
+            animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+        }
+
+        .lds-facebook div:nth-child(1) {
+            left: 8px;
+            animation-delay: -0.24s;
+        }
+
+        .lds-facebook div:nth-child(2) {
+            left: 32px;
+            animation-delay: -0.12s;
+        }
+
+        .lds-facebook div:nth-child(3) {
+            left: 56px;
+            animation-delay: 0;
+        }
+
+        @keyframes lds-facebook {
+            0% {
+                top: 8px;
+                height: 64px;
+            }
+
+            50%,
+            100% {
+                top: 24px;
+                height: 32px;
+            }
+        }
+    </style>
 
 
 
@@ -42,6 +94,15 @@
 
     @include('sweetalert::alert')
     @yield('container')
+
+
+    <div class="lds-facebook" id="spinner">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+
+
 
     {{-- bagian url untuk los --}}
     <script>
@@ -61,32 +122,6 @@
     <!-- Include SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
-    {{-- <script>
-        $('form').submit(function(e) {
-            e.preventDefault();
-            var formData = new FormData($('.form')[0]);
-            $.ajax({
-                method: 'POST',
-                url: url,
-                data: formData,
-                dataType: 'json',
-                success: function(response) {
-                    if (response.success) {
-                        // Handle ketika sukses
-                        alert(response.message);
-                    } else {
-                        // Handle ketika terjadi kesalahan
-                        alert('Error: ' + response.message);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error(xhr.responseText);
-                    alert('Terjadi kesalahan saat mengirim permintaan Ajax.');
-                }
-            });
-        })
-    </script> --}}
 
 
     <script>

@@ -52,7 +52,7 @@ $(document).ready(function () {
   nextButton.on("click", function () {
     // Validasi pada langkah sebelumnya sebelum pindah ke langkah berikutnya
 
-    console.log("Next before: " + currentStep + " | " + nilaiTerpilih);
+    // console.log("Next before: " + currentStep + " | " + nilaiTerpilih);
     // Validasi pada langkah sebelumnya sebelum pindah ke langkah berikutnya
     if (validateStep(currentStep)) {
       if (currentStep === 0) {
@@ -80,7 +80,7 @@ $(document).ready(function () {
 
   // Tambahkan event listener untuk tombol "Kembali"
   prevButton.on("click", function () {
-    console.log("Kembali : " + currentStep + " | " + nilaiTerpilih);
+    // console.log("Kembali : " + currentStep + " | " + nilaiTerpilih);
     if (currentStep > 0) {
       if (currentStep === 8) {
         // Langsung ke step 5 jika berada di step 6
@@ -110,14 +110,17 @@ $(document).ready(function () {
       no_ktp_pemohon: nik_ktp,
     };
 
+    showLoadingSpinner();
+
     $.ajax({
       type: "POST",
       url: apiurl + "/restapi_credit_online/nik_ktp",
       data: data,
       success: function (response) {
+        hideLoadingSpinner();
         response = JSON.parse(response);
 
-        console.log(response)
+        // console.log(response)
 
         if (response && response.los_data_where_nik) {
 
@@ -180,6 +183,7 @@ $(document).ready(function () {
         }
       },
       error: function (error) {
+        hideLoadingSpinner();
         // Handle error jika terjadi
         console.log("Error in Ajax request");
         // Lanjutkan ke langkah berikutnya
@@ -198,11 +202,11 @@ $(document).ready(function () {
 
       if (!element.val()) {
         setInvalid(selectContainer, "Bagian ini wajib terisi");
-        console.log("salah");
+        // console.log("salah");
         return false;
       } else {
         setValid(selectContainer);
-        console.log("benar");
+        // console.log("benar");
         return true;
       }
     }
@@ -279,9 +283,36 @@ $(document).ready(function () {
     }
   });
 
+
+
+  // Tambahkan fungsi untuk menampilkan pesan loading
+  function showLoadingMessage() {
+ 
+    Swal.fire({
+      title: 'Loading...',
+      allowOutsideClick: false,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      },
+      showConfirmButton: false,
+    });
+  }
+
+  // Tambahkan fungsi untuk menyembunyikan pesan loading
+  function hideLoadingMessage() {
+    // Sembunyikan pesan loading atau indikator lainnya
+    Swal.close();
+  }
+
+
+
   // Tambahkan event listener untuk tombol "Submit"
   submitButton.on("click", function (e) {
     e.preventDefault(); // Hindari pengiriman formulir default
+
+    // Menampilkan pesan loading
+    showLoadingMessage();
+
 
     // Menghapus format rupiah sebelum mengirimkan nilai
     $(".rupiah").each(function () {
@@ -291,62 +322,79 @@ $(document).ready(function () {
 
 
 
-
     if (validateStep(currentStep)) {
-      showPreloader();
-
-      // Sembunyikan tombol "Kembali" dan "Submit" ketika halaman sukses tampil
-      prevButton.hide();
-      submitButton.hide();
-
-
       var formData = new FormData($('.form')[0]);
-
-
 
       $.ajax({
         url: url,
         method: "POST",
         data: formData,
-        contentType: false,
         processData: false,
+        contentType: false,
         success: function (response) {
-          console.log(response);
-          // Lakukan sesuatu dengan respons, misalnya menampilkan pesan ke pengguna
-          // alert(response.message);
 
+
+          if (response.message != 'berhasil') {
+            hidePreloader();
+            hideLoadingMessage();
+
+
+            var pesaneror = ''
+
+            $.each(response.errors, function (key, value) {
+              // console.log(key + ": " + value[0]);
+              // pesaneror = key + ": " + value[0];
+              pesaneror = value[0];
+              // Tampilkan pesan kesalahan validasi ke pengguna atau lakukan tindakan lainnya
+            });
+
+
+            Swal.fire({
+              text: pesaneror,
+              icon: 'warning',
+              toast: true,
+              timer: 5000,
+              position: 'top-end',
+              showConfirmButton: false
+            }).then(() => {
+              // window.location.href = '/';
+            })
+          } else if (response.message == 'berhasil') {
+
+            showPreloader();
+
+            hideLoadingMessage();
+            prevButton.hide();
+            submitButton.hide();
+
+            setTimeout(function () {
+              hidePreloader();
+              showSuccess();
+            }, 1000);
+
+          }
+
+
+        },
+        error: function (xhr) {
+          hideLoadingMessage();
+          console.log("Kesalahan pada sisi klien:", xhr.statusText);
           // Swal.fire({
           //   // title: '',
-          //   text: "Berhasil ",
-          //   icon: 'success',
+          //   text: xhr.responseText,
+          //   icon: 'warning',
           //   toast: true,
           //   timer: 3000,
           //   position: 'top-end',
           //   showConfirmButton: false
           // })
-
-          console.log(response.message);
-        },
-        error: function (err) {
-
-          Swal.fire({
-            // title: '',
-            text: "Eror",
-            icon: 'warning',
-            toast: true,
-            timer: 3000,
-            position: 'top-end',
-            showConfirmButton: false
-          })
         },
       });
 
       // Lakukan submit formulir atau lakukan tindakan sesuai kebutuhan
-      setTimeout(function () {
-        hidePreloader();
-        showSuccess();
-      }, 3000);
+
     } else {
+      hideLoadingMessage();
       alert("Mohon lengkapi isian yang dibutuhkan sebelum mengirim formulir.");
     }
   });
@@ -419,7 +467,7 @@ function ajax_send(url, type, data, dataType, callback) {
     type: type,
     data: data,
     dataType: dataType,
-    
+
     success: function (response) {
       callback({ sukses: true, data: response });
     },
@@ -474,7 +522,7 @@ $(document).ready(function () {
 // select dapatkan value
 $(".kantor_cabang").change(function () {
   var kode_cabang = $(".kantor_cabang").val();
-  console.log("kode_cabang : " + kode_cabang);
+  // console.log("kode_cabang : " + kode_cabang);
 
   var url = apiurl + "/restapi_credit_online/instansi";
   var type = "POST";
@@ -483,7 +531,7 @@ $(".kantor_cabang").change(function () {
 
   ajax_send(url, type, data, dataType, function (res) {
     if (res.sukses) {
-      console.log(res);
+      // console.log(res);
       select_ref_instansi(res.data);
     }
   });
@@ -522,7 +570,7 @@ function select_ref_instansi(res) {
     kodeInstansiInput.val(kodeInstansi);
 
     // Tampilkan nilai kode_instansi di console
-    console.log('Kode instansi : ' + kodeInstansi + " nama instansi : " + selectElement.val());
+    // console.log('Kode instansi : ' + kodeInstansi + " nama instansi : " + selectElement.val());
   });
 }
 
@@ -551,7 +599,6 @@ $(document).ready(function () {
 });
 
 // rupiah
-
 function formatRupiah(angka) {
   var number_string = angka.replace(/[^,\d]/g, "").toString(),
     split = number_string.split(","),
@@ -583,30 +630,7 @@ function unformatRupiah(rupiah) {
   return rupiah.replace(/[^\d]/g, ""); // Menghapus semua karakter selain digit
 }
 
-// $(document).ready(function () {
-//   $(".bulan").on("input", function (e) {
-//     let inputValue = $(this).val();
 
-//     // Mendeteksi tombol yang ditekan
-//     if (e.originalEvent.inputType === "deleteContentBackward") {
-//       // Hapus karakter angka satu per satu dari belakang
-//       inputValue = inputValue.replace(/\d(?=[^\d]*$)/, "");
-
-//       // Hapus kata " Bulan" jika seluruh angka sudah dihapus
-//       if (!/\d/.test(inputValue)) {
-//         inputValue = "";
-//       }
-//     }
-
-//     // Pastikan kata " Bulan" selalu ada
-//     if (inputValue !== "" && !inputValue.endsWith(" Bulan")) {
-//       inputValue += " Bulan";
-//     }
-
-//     // Update nilai input
-//     $(this).val(inputValue);
-//   });
-// });
 $(document).ready(function () {
   // Inisialisasi Select2
   $(".js-example-basic-single").select2({
@@ -618,10 +642,6 @@ $(document).ready(function () {
   $(".select2-container").css("height", "40px");
   $(".select2-selection, .select2-selection__rendered").css("height", "40px");
 });
-
-
-
-
 
 
 $(document).ready(function () {
@@ -636,21 +656,23 @@ $(document).ready(function () {
     if (nilaiTerpilih != "MENIKAH" && typeof nilaiTerpilih !== "undefined") {
       file2Inputs.removeAttr('required');
       $('.file2').hide();
-      console.log("hide " + nilaiTerpilih)
+      // console.log("hide " + nilaiTerpilih)
     } else {
       file2Inputs.prop('required', true);
       $('.file2').show();
-      console.log("show " + nilaiTerpilih)
+      // console.log("show " + nilaiTerpilih)
     }
   })
 
 })
 
-// // select
-// $(document).ready(function () {
 
-//   $(".js-example-basic-single").select2({
-//     width: "100%",
-//     height: "40px",
-//   });
-// });
+// Tampilkan loading spinner
+function showLoadingSpinner() {
+  $("#spinner").show();
+}
+
+// Sembunyikan loading spinner
+function hideLoadingSpinner() {
+  $("#spinner").hide();
+}

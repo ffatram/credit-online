@@ -11,6 +11,7 @@ use App\Http\Controllers\PermohonanFileController;
 use App\Models\Permohonan;
 use App\Models\PermohonanFile;
 use RealRashid\SweetAlert\Facades\Alert;
+use Illuminate\Validation\ValidationException;
 
 class PemohonController extends Controller
 {
@@ -39,6 +40,41 @@ class PemohonController extends Controller
 
             try {
 
+
+                // $validatedData = $request->validate(
+                //     [
+                //         'npwp_pemohon' => 'max:15',
+                //         'file_no_ktp_pemohon' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                //         'file_no_ktp_pasangan' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                //         'file_no_kk' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                //     ],
+                //     [
+                //         'npwp_pemohon.max' => "NPWP : Max 15 karakter!"
+                //     ]
+
+                // );
+
+
+                $validatedData = $request->validate([
+                    'npwp_pemohon' => 'max:15',
+                    'file_no_ktp_pemohon' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                    'file_no_ktp_pasangan' => [
+                        // 'sometimes',
+                        'required_if:status_perkawinan,MENIKAH',
+                        'image',
+                        'mimes:jpeg,png,jpg',
+                        'max:2048',
+                    ],
+                    'file_no_kk' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                    'status_perkawinan' => 'required|in:MENIKAH,BELUM MENIKAH,DUDA,JANDA',
+                ], [
+                    'npwp_pemohon.max' => 'NPWP: Maksimal 15 karakter!',
+                ]);
+
+
+
+
+
                 $data =  $request->except(['_token', 'submit', 'file_no_ktp_pemohon', 'file_no_ktp_pasangan', 'file_no_kk']);
 
                 // Periksa apakah tgl_create diisi atau tidak
@@ -52,10 +88,16 @@ class PemohonController extends Controller
                 $PermohonanFileController = new PermohonanFileController();
                 $data = $PermohonanFileController->upload($request);
 
+
                 $data = $data->getData()->message;
                 return response()->json(['message' => $data]);
+            } catch (ValidationException $e) {
+                // Tangkap kesalahan validasi
+                $errors = $e->validator->errors()->toArray();
+                return response()->json(['success' => false, 'errors' => $errors]);
             } catch (\Exception $e) {
-                return response()->json(['message' => $e]);
+                // Tangkap kesalahan umum lainnya
+                return response()->json(['success' => false, 'error' => $e->getMessage()]);
             }
         }
 
@@ -66,6 +108,13 @@ class PemohonController extends Controller
             'jenispekerjaan' => $this->api->jenis_pekerjaan()
         ]);
     }
+
+
+
+
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -112,12 +161,12 @@ class PemohonController extends Controller
      */
     public function destroy(string $id)
     {
-        //
     }
 
 
 
-    public function alert(){
+    public function alert()
+    {
         Alert::success('Hore!', 'Post Created Successfully');
     }
 }

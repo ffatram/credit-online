@@ -14,10 +14,8 @@ return new class extends Migration
         Schema::create('permohonan_files', function (Blueprint $table) {
             $table->id();
             $table->string('no_ktp_pemohon');
-            $table->string('file_no_ktp_pemohon');
-            $table->string('file_no_ktp_pasangan');
-            $table->string('file_no_kk');
-            $table->string('jenis_file',100);
+            $table->string('nama_file');
+            $table->string('jenis_file');
             $table->timestamps();
         });
     }

@@ -5,7 +5,7 @@
 @section('container')
     <!-- CONTAINER -->
 
-    
+
 
     <div class="container d-flex align-items-center min-vh-100">
         <div class="row g-0 justify-content-center">
@@ -148,8 +148,15 @@
                                 <div class="row">
                                     <div class="mt-1">
                                         <label class="form-label">NPWP</label>
-                                        <input class="form-control" id="npwp_pemohon" name="npwp_pemohon"
-                                            type="text">
+                                        <input class="form-control" @error('npwp_pemohon') is_invalid @enderror
+                                            id="npwp_pemohon" name="npwp_pemohon" type="text">
+
+                                        @error('npwp_pemohon')
+                                            <div class="invalid-feedback">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+
                                     </div>
                                     <div class="mt-2">
                                         <label class="form-label">Alamat Sesuai KTP</label><span class="required">*</span>
@@ -170,7 +177,7 @@
                                         <div class="error-message"></div>
                                     </div>
                                     <div class="mt-2">
-                                        <label class="form-label">Media Sosial</label>
+                                        <label class="form-label">Email</label>
                                         <input class="form-control" id="media_sosial" name="media_sosial"
                                             type="text">
                                     </div>
@@ -182,9 +189,10 @@
                                 <div class="p-3 mb-2 bg-success text-white">Data Pribadi</div>
                                 <div class="row">
                                     <div class="mt-1">
-                                        <label class="form-label">Status Kepemilikan Rumah</label>
+                                        <label class="form-label">Status Kepemilikan Rumah</label><span
+                                            class="required">*</span>
                                         <select class="form-select" aria-label="" id="status_kepemilikan_rumah_pemohon"
-                                            name="status_kepemilikan_rumah_pemohon">
+                                            name="status_kepemilikan_rumah_pemohon" required>
                                             <option selected disabled>- Silahkan Pilih -</option>
                                             <option value="PRIBADI">PRIBADI</option>
                                             <option value="KELUARGA">KELUARGA</option>
@@ -196,9 +204,10 @@
 
                                     </div>
                                     <div class="mt-2">
-                                        <label class="form-label">Pendidikan Terakhir</label>
+                                        <label class="form-label">Pendidikan Terakhir</label><span
+                                            class="required">*</span>
                                         <select class="form-select" aria-label="" id="pendidikan_terakhir_pemohon"
-                                            name="pendidikan_terakhir_pemohon">
+                                            name="pendidikan_terakhir_pemohon" required>
                                             <option selected disabled>- Silahkan Pilih -</option>
                                             <option value="SD">SD</option>
                                             <option value="SMP">SMP</option>
@@ -657,7 +666,7 @@
                                     <div class="mt-1 file1">
                                         <label class="form-label">KTP Pemohon</label><span class="required">*</span>
                                         <input class="form-control" id="file_no_ktp_pemohon" name="file_no_ktp_pemohon"
-                                            type="file" required>
+                                            type="file" accept=".jpg, .jpeg, .png" required>
 
                                         <div class="error-message"></div>
                                     </div>
@@ -665,14 +674,14 @@
                                     <div class="mt-1 file2">
                                         <label class="form-label">KTP Pasangan</label><span class="required">*</span>
                                         <input class="form-control" id="file_no_ktp_pasangan" name="file_no_ktp_pasangan"
-                                            type="file" required>
+                                            type="file" accept=".jpg, .jpeg, .png" required>
                                         <div class="error-message"></div>
                                     </div>
 
                                     <div class="mt-1 file3">
                                         <label class="form-label">File KK</label><span class="required">*</span>
                                         <input class="form-control" id="file_no_kk" name="file_no_kk" type="file"
-                                            required>
+                                            accept=".jpg, .jpeg, .png" required>
                                         <div class="error-message"></div>
                                     </div>
                                 </div>
