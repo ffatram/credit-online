@@ -14,9 +14,10 @@
 
                 <div id="title-container">
                     <img class="covid-image" src="{{ asset('images/img.png') }} " alt="img">
-                    <h2>KREDIT ONLINE</h2>
-                    <h3>BPR HASAMITRA</h3>
-                    <p>Dana tambahan selalu berguna. Ajukan kredit online hari ini dan nikmati kemudahan tanpa repot.
+                    {{-- <h2>KREDIT ONLINE</h2>
+                    <h3>BPR HASAMITRA</h3> --}}
+                    <p>Dana tambahan selalu berguna. Ajukan kredit online hari ini dan nikmati kemudahan tanpa harus datang
+                        ke bank.
                     </p>
                 </div>
 
@@ -665,6 +666,7 @@
                                 <div class="row">
                                     <div class="mt-1 file1">
                                         <label class="form-label">KTP Pemohon</label><span class="required">*</span>
+                                        <small class="form-text text-muted">Ukuran file tidak boleh melebihi 5MB.</small>
                                         <input class="form-control" id="file_no_ktp_pemohon" name="file_no_ktp_pemohon"
                                             type="file" accept=".jpg, .jpeg, .png" required>
 
@@ -673,6 +675,7 @@
 
                                     <div class="mt-1 file2">
                                         <label class="form-label">KTP Pasangan</label><span class="required">*</span>
+                                        <small class="form-text text-muted">Ukuran file tidak boleh melebihi 5MB.</small>
                                         <input class="form-control" id="file_no_ktp_pasangan" name="file_no_ktp_pasangan"
                                             type="file" accept=".jpg, .jpeg, .png" required>
                                         <div class="error-message"></div>
@@ -680,6 +683,7 @@
 
                                     <div class="mt-1 file3">
                                         <label class="form-label">File KK</label><span class="required">*</span>
+                                        <small class="form-text text-muted">Ukuran file tidak boleh melebihi 5MB.</small>
                                         <input class="form-control" id="file_no_kk" name="file_no_kk" type="file"
                                             accept=".jpg, .jpeg, .png" required>
                                         <div class="error-message"></div>

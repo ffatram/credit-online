@@ -287,7 +287,7 @@ $(document).ready(function () {
 
   // Tambahkan fungsi untuk menampilkan pesan loading
   function showLoadingMessage() {
- 
+
     Swal.fire({
       title: 'Loading...',
       allowOutsideClick: false,
@@ -557,6 +557,8 @@ function select_ref_instansi(res) {
     });
     selectElement.append(option);
   });
+  // Tambahkan opsi "LAINNYA" setelah opsi dari data API
+  selectElement.append("<option value='LAINNYA'>LAINNYA</option>");
 
   // Tambahkan event handler untuk perubahan nilai pada elemen select
   selectElement.on("change", function () {

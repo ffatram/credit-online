@@ -57,15 +57,15 @@ class PemohonController extends Controller
 
                 $validatedData = $request->validate([
                     'npwp_pemohon' => 'max:15',
-                    'file_no_ktp_pemohon' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                    'file_no_ktp_pemohon' => 'required|image|mimes:jpeg,png,jpg|max:5120',
                     'file_no_ktp_pasangan' => [
                         // 'sometimes',
                         'required_if:status_perkawinan,MENIKAH',
                         'image',
                         'mimes:jpeg,png,jpg',
-                        'max:2048',
+                        'max:5120',
                     ],
-                    'file_no_kk' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+                    'file_no_kk' => 'required|image|mimes:jpeg,png,jpg|max:5120',
                     'status_perkawinan' => 'required|in:MENIKAH,BELUM MENIKAH,DUDA,JANDA',
                 ], [
                     'npwp_pemohon.max' => 'NPWP: Maksimal 15 karakter!',
